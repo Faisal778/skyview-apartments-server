@@ -34,15 +34,50 @@ async function run() {
     })
 
 
-    app.post('/reservation', async (req, res)=> {
+    // app.post('/reservation', async (req, res)=> {
+    //     const data = req.body;
+    //     const result = await reservationCollection.insertOne(data);
+    //     res.send(result);
+    // })
+
+    app.post("/reservation", async (req, res) => {
         const data = req.body;
-        const result = await reservationCollection.insertOne(data);
+        const userId = data.user_id; 
+      
+        try {
+          // Ensure userId is present
+          if (!userId) {
+            return res.status(400).send({ message: "User ID is required." });
+          }
+      
+          // Check if a reservation already exists for the user
+          const existingReservation = await reservationCollection.findOne({ user_id: userId });
+      
+          if (existingReservation) {
+            return res.status(400).send({ message: "User has already applied for a job." });
+          }
+      
+          // Insert new reservation
+          const result = await reservationCollection.insertOne(data);
+          res.status(201).send(result);
+        } catch (error) {
+          console.error("Error processing reservation:", error);
+          res.status(500).send({ message: "An error occurred. Please try again later." });
+        }
+      });
+
+    app.get('/reservation', async (req, res)=> {
+        const email = req.query.email;
+        const query = {email: email};
+        const result = await reservationCollection.find().toArray();
         res.send(result);
     })
 
-    app.get('/reservation', async (req, res)=> {
-        const result = await reservationCollection.find().toArray();
-        res.send(result);
+    app.delete('/reservation/:id', async (req, res) => {
+        const id = req.params.id;
+        const query = {_id: new ObjectId(id)}
+        const result = await reservationCollection.deleteOne(query);
+        res.send(result)
     })
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
