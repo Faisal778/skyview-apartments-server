@@ -27,6 +27,23 @@ async function run() {
 
     const apartmentsCollection = client.db('skyviewDb').collection('apartments')
     const reservationCollection = client.db('skyviewDb').collection('reservation')
+    const userCollection = client.db('skyviewDb').collection('users')
+
+    //user related api
+    app.post('/users', async (req, res) => {
+        const user = req.body;
+
+        const query = {email: user.email}
+        const existingUser = await userCollection.findOne(query)
+        if (existingUser){
+            return res.send({message: 'user already exists', insertedId: null})
+        }
+        const result = await userCollection.insertOne(user)
+        res.send(result)
+    })
+
+
+
 
     app.get('/apartments', async (req, res)=> {
         const result = await apartmentsCollection.find().toArray();
