@@ -186,7 +186,10 @@ async function run() {
     })
 
     //announcement related api
-
+    app.get('/announcement', async (req, res)=> {
+        const result = await announcementCollection.find().toArray();
+        res.send(result)
+    })
 
     app.post('/announcement', async(req, res)=> {
         const data = req.body;
