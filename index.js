@@ -64,25 +64,29 @@ async function run() {
 
 
     //user related api
-    app.get('/users', verifyToken, verifyAdmin, async(req, res) => {
+    app.get('/users', async(req, res) => {
         const result = await userCollection.find().toArray();
         res.send(result)
     });
 
 
-    app.get('/user/admin/:email', verifyToken, async(req, res)=> {
+    app.get('/users/admin/:email', verifyToken, async (req, res) => {
         const email = req.params.email;
-        if (email !== req.decoded.email){
-            return res.status(403).send({message: 'unauthorized access'})
+        if (email !== req.decoded.email) {
+            return res.status(403).send({ message: 'unauthorized access' });
         }
-        const query = {email: email}
+    
+        const query = { email: email };
         const user = await userCollection.findOne(query);
         let admin = false;
-        if (user){
-            admin = user?.role === 'admin';
+    
+        if (user) {
+            admin = user.role === 'admin';
         }
-        res.send({admin});
-    })
+    
+        res.send({ admin });
+    });
+    
     app.post('/users', async (req, res) => {
         const user = req.body;
 
@@ -104,7 +108,7 @@ async function run() {
         res.send(result)
     })
 
-    app.patch('/users/admin/:id', async(req, res)=> {
+    app.patch('/users/admin/:id',verifyToken, verifyAdmin,  async(req, res)=> {
         const id = req.params.id;
         const filter = {_id: new ObjectId(id)}
         const updatedDoc = {
@@ -165,7 +169,7 @@ async function run() {
         res.send(result);
     })
 
-    app.delete('/reservation/:id', async (req, res) => {
+    app.delete('/reservation/:id', verifyToken, verifyAdmin, async (req, res) => {
         const id = req.params.id;
         const query = {_id: new ObjectId(id)}
         const result = await reservationCollection.deleteOne(query);
