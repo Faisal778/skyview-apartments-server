@@ -29,6 +29,7 @@ async function run() {
     const apartmentsCollection = client.db('skyviewDb').collection('apartments')
     const reservationCollection = client.db('skyviewDb').collection('reservation')
     const userCollection = client.db('skyviewDb').collection('users')
+    const announcementCollection = client.db('skyviewDb').collection('announcements')
 
     //middlewares
 
@@ -182,6 +183,15 @@ async function run() {
         const user = req.body;
         const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'})
         res.send({token})
+    })
+
+    //announcement related api
+
+
+    app.post('/announcement', async(req, res)=> {
+        const data = req.body;
+        const result = await announcementCollection.insertOne(data);
+        res.send(result);
     })
 
 
