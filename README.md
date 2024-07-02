@@ -1,29 +1,42 @@
-This is the server side github of **https://skyviewapartments-c882f.web.app/**
+This is the server side github of **https://github.com/fms-faisal/skyview-apartments-client**
 # Skyview Apartment Management API
 
 ## Introduction
-This Node.js Express application provides a backend API for managing apartments, reservations, users, announcements, and payments for a fictional apartment complex named "Skyview Apartments."
+This Node.js Express application provides a backend API for managing apartments, reservations, users, announcements, and payments for an apartment complex named "Skyview Apartments."
 
 ## Technologies Used
 - **Express.js**: Web framework for building APIs
-- **Mongoose (implied by MongoClient)**: Object Document Mapper (ODM) for interacting with MongoDB
 - **MongoDB**: NoSQL database for data storage
 - **JWT (JSON Web Token)**: Authentication mechanism
 - **Stripe**: Payment processing platform
 
 ## Installation
 1. Clone this repository.
-2. Install dependencies: `npm install` (or `yarn install`)
-3. Create a `.env` file in the project root directory and set the following environment variables:
+   ```
+   git clone https://github.com/fms-faisal/skyview-apartments-server.git
+   ```
+
+2. Navigate to the project directory.
+   ```
+   cd skyview-apartments-server
+   ```
+3. Install dependencies:
+   ```
+   npm install
+   ```
+4. **Set Up Environment Variables**
+   Create a `.env` file in the project root directory and set the following environment variables:
    - `DB_USER`: Your MongoDB username
    - `DB_PASS`: Your MongoDB password
-   - `STRIPE_SECRET_KEY`: Your Stripe secret key
    - `ACCESS_TOKEN_SECRET`: A secret key used for generating JWT tokens
+   - `STRIPE_SECRET_KEY`: Your Stripe secret key
 
-## Usage
-1. Start the server: `node index.js` (or `npm start` or `yarn start`)
+5. Start the server:
+    ```
+   node index.js
+    ``` 
 2. The server will listen on port 5000 by default (configurable via `PORT` environment variable).
-3. Use a REST client (like Postman, Insomnia) or code in another language to interact with the API endpoints.
+
 
 ## API Endpoints
 
@@ -39,24 +52,19 @@ This Node.js Express application provides a backend API for managing apartments,
 - **GET** `/apartments` (Public): Retrieves all apartments.
 
 ### Reservation Management
-- **POST** `/reservation` (Public): Creates a new reservation.
-- **GET** `/reservation` (Protected, Admin Only): Retrieves all reservations. Requires a valid JWT token and admin privileges in the authorization header.
-- **GET** `/reservation?email=:email` (Protected, User or Admin): Retrieves reservations for a specific user (based on email). Requires a valid JWT token.
-- **DELETE** `/reservation/:id` (Protected, Admin Only): Deletes a reservation. Requires a valid JWT token and admin privileges in the authorization header.
+- **POST** `/reservation`: Creates a new reservation.
+- **GET** `/reservation/agreement`: Retrieves pending reservations.
+- **DELETE** `/reservation/:id`: Deletes a reservation.
 
 ### JWT Authentication
 - **POST** `/jwt` (Public): Generates a JWT token for a user.
 
 ### Announcement Management
-- **GET** `/announcement` (Public): Retrieves all announcements.
-- **POST** `/announcement` (Protected, Admin Only): Creates a new announcement. Requires a valid JWT token and admin privileges in the authorization header.
+- **GET** `/announcement`: Retrieves all announcements.
+- **POST** `/announcement`: Creates a new announcement.
 
 ### Payment Management
-- **POST** `/create-payment-intent` (Public): Creates a Stripe payment intent for a specific amount.
-- **POST** `/payments` (Protected, Admin Only): Records a payment and deletes associated reservations. Requires a valid JWT token and admin privileges in the authorization header.
-- **GET** `/payments/:email` (Protected, User or Admin): Retrieves payments for a specific user (based on email). Requires a valid JWT token.
+- **POST** `/create-payment-intent`: Creates a Stripe payment intent for a specific amount.
+- **POST** `/payments`: Records a payment and deletes associated reservations.
+- **GET** `/payments/:email`: Retrieves payments for a specific user (based on email).
 
-## Notes
-- Protected endpoints require a valid JWT token in the authorization header with the format `Bearer <token>`.
-- Admin-only endpoints require additional checks for admin privileges within the JWT token.
-- Error handling and validation are not explicitly shown in the code snippets for brevity, but should be implemented in a production environment.
